@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, FlatList } from 'react-native';
 import ListIthem from './src/components/ListIthem';
+import uuid from 'uuid';
 
 
 export default class App extends React.Component {
@@ -13,22 +14,22 @@ export default class App extends React.Component {
       placeName: val
     })
   };
+  placeDeleteHandler = (id) => {
+    this.setState((prevState) => ({
+      places: prevState.places.filter((place, index) => {
+        return place.id !== id
+      })
+    }));
+  }
   addButtonHandler = () => {
     if (this.state.placeName.trim() === '') {
       return alert('Please Enter A Valid Name');
     }
     this.setState((prevState) => ({
-      places: prevState.places.concat(this.state.placeName)
+      places: prevState.places.concat({ value: this.state.placeName, key: uuid() })
     }))
   };
   render() {
-    outputPlaces = this.state.places.map((place, i) => {
-      return <ListIthem
-        key={i}
-        placeName={place}
-        onPressIthem={()=> alert(`Ithem ID : ${i}`)}
-      />
-    })
     return (
       <View style={styles.container}>
         <View style={styles.inputContainer}>
@@ -40,11 +41,16 @@ export default class App extends React.Component {
           />
           <Button title="Add" style={styles.inputButton} onPress={this.addButtonHandler} />
         </View>
-        <View style={styles.outPutContainer}>
-          {
-            outputPlaces
-          }
-        </View>
+        <FlatList
+          style={styles.outPutContainer}
+          data={this.props.places}
+          renderItem={({ item }) => {
+            <ListIthem
+              placeName={item.value}
+              onPressIthem={() => this.placeDeleteHandler(item.key)}
+            />
+          }}
+        />
       </View>
     );
   }
