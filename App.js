@@ -46,7 +46,7 @@ export default class App extends React.Component {
       return {
         places: prevState.places.concat({
           name: this.state.placeName, key: uuid(), image: {
-            uri: "https://www.shareicon.net/download/2016/12/07/862735_map_512x512.png"
+            uri: "https://www.swedishlapland.com/wp-content/uploads/storasjofallet_GRichardson.jpg"
           }
         })
       }
