@@ -4,26 +4,20 @@ import ListIthem from './src/components/ListIthem';
 import uuid from 'uuid';
 import MyImage from './src/images/img1.jpg';
 import ModalDetails from './src/components/ModalDetails';
+import { connect } from 'react-redux';
+import { addPlace, closeModal, placeClick, deletePlace } from './src/store/actions';
 
 
-export default class App extends React.Component {
+
+class App extends React.Component {
   state = {
     placeName: '',
-    places: [],
-    selectedPlace: null,
-    modalVisible: false
   }
   onClickPlaceHandler = place => {
-    this.setState({
-      selectedPlace: place,
-      modalVisible: true
-    });
+    return this.props.placeClick(place)
   }
   closeModalHandler = () => {
-    this.setState({
-      selectedPlace: null,
-      modalVisible: false
-    })
+    return this.props.closeModal()
   }
   placeNameChangeHandler = val => {
     this.setState({
@@ -31,33 +25,20 @@ export default class App extends React.Component {
     })
   };
   placeDeleteHandler = (placeId) => {
-    this.setState((prevState) => ({
-      places: prevState.places.filter((place, index) => {
-        return place.key != prevState.selectedPlace.key
-      }),
-      modalVisible: false
-    }));
+    return this.props.deletePlace();
   }
   addButtonHandler = () => {
     if (this.state.placeName.trim() === '') {
       return alert('Please Enter A Valid Name');
     }
-    this.setState((prevState) => {
-      return {
-        places: prevState.places.concat({
-          name: this.state.placeName, key: uuid(), image: {
-            uri: "https://www.swedishlapland.com/wp-content/uploads/storasjofallet_GRichardson.jpg"
-          }
-        })
-      }
-    })
+    return this.props.addPlace(this.state.placeName);
   };
   render() {
     return (
       <View style={styles.container}>
         <ModalDetails
-          modalVisible={this.state.modalVisible}
-          selectedPlace={this.state.selectedPlace}
+          modalVisible={this.props.places.modalVisible}
+          selectedPlace={this.props.places.selectedPlace}
           closeModalHandler={this.closeModalHandler}
           placeDeleteHandler={this.placeDeleteHandler}
         />
@@ -72,7 +53,7 @@ export default class App extends React.Component {
         </View>
         <FlatList
           style={styles.outPutContainer}
-          data={this.state.places}
+          data={this.props.places.places}
           renderItem={({ item }) => (
             <ListIthem
               placeName={item.name}
@@ -110,3 +91,19 @@ const styles = StyleSheet.create({
     width: "100%"
   }
 });
+
+const mapStateToProps = state => {
+  return {
+    places: state.places
+  }
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    addPlace: (placeName) => dispatch(addPlace(placeName)),
+    closeModal: () => dispatch(closeModal()),
+    placeClick: (place) => dispatch(placeClick(place)),
+    deletePlace: () => dispatch(deletePlace())
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
