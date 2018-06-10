@@ -1,6 +1,6 @@
 import React from 'react';
-import { Modal, Text, Image, View, Button, StyleSheet } from 'react-native';
-
+import { Modal, Text, Image, View, Button, StyleSheet,TouchableHighlight } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 const ModalDetails = props => {
@@ -22,14 +22,17 @@ const ModalDetails = props => {
                 props.closeModalHandler();
             }}>
             <View style={styles.detailsContainer}>{details}</View>
-            <View>
-                <Button title="Delete Place" onPress={props.placeDeleteHandler} />
-                <Button title="Close" onPress={props.closeModalHandler} />
+            <View  style={styles.modalSection}>
+                <TouchableHighlight onPress={props.placeDeleteHandler}>
+                    <Icon size={60} name='delete'/>
+                </TouchableHighlight>
+                <TouchableHighlight onPress={props.closeModalHandler}>
+                    <Icon size={60} name='close-circle'/>
+                </TouchableHighlight>
             </View>
         </Modal>
     );
 }
-
 const styles = StyleSheet.create({
     detailsContainer: {
         flexDirection: 'row',
@@ -48,5 +51,9 @@ const styles = StyleSheet.create({
         fontSize: 50,
         textAlign: "center"
     },
+    modalSection:{
+        flexDirection: 'row',
+        justifyContent: 'space-around'
+    }
 })
 export default ModalDetails;

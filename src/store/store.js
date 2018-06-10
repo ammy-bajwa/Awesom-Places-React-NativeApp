@@ -1,9 +1,10 @@
 import React from 'react';
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers,compose } from 'redux';
 import uuid from 'uuid';
 
 
 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
 const initialStoreState = {
     places: [],
     selectedPlace: null,
@@ -44,8 +45,10 @@ const placesReducer = (state = initialStoreState, action) => {
             return state
     }
 }
-const store = createStore(combineReducers({
-    places: placesReducer
-}));
+const store = createStore(combineReducers(
+    {
+        places: placesReducer
+    },
+), composeEnhancers);
 
 export default store;
